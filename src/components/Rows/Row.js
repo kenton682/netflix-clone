@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import Youtube from "react-youtube";
 import movieTrailer from "movie-trailer";
+import Carousel from "react-elastic-carousel";
+
 import "./Row.css";
 
 const base_url = "https://image.tmdb.org/t/p/original/";
@@ -9,6 +11,8 @@ const base_url = "https://image.tmdb.org/t/p/original/";
 const Row = ({ title, fetchUrl, isLargeRow }) => {
   const [movies, setMovies] = useState([]);
   const [trailerUrl, setTrailerUrl] = useState("");
+
+  const breakPoints = [{ width: 100, itemsToShow: 8, itemsToScroll: 8 }];
 
   useEffect(() => {
     async function fetchData() {
@@ -45,17 +49,19 @@ const Row = ({ title, fetchUrl, isLargeRow }) => {
     <div className="row">
       <h2>{title}</h2>
       <div className="row_posters">
-        {movies.map((movie) => (
-          <img
-            key={movie.id}
-            onClick={() => handleClick(movie)}
-            className={`row_poster ${isLargeRow && `row_posterLarge`}`}
-            src={`${base_url}${
-              isLargeRow ? movie.poster_path : movie.backdrop_path
-            }`}
-            alt={movie.name}
-          />
-        ))}
+        <Carousel breakPoints={breakPoints}>
+          {movies.map((movie) => (
+            <img
+              key={movie.id}
+              onClick={() => handleClick(movie)}
+              className={`row_poster ${isLargeRow && `row_posterLarge`}`}
+              src={`${base_url}${
+                isLargeRow ? movie.poster_path : movie.backdrop_path
+              }`}
+              alt={movie.name}
+            />
+          ))}
+        </Carousel>
       </div>
       {trailerUrl && <Youtube videoId={trailerUrl} opts={opts} />}
     </div>
